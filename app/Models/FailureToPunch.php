@@ -34,6 +34,17 @@ class FailureToPunch extends Model
         return $result->get();
     }
 
+    public function listForApproval($employee){
+        // $result = FailureToPunch::where('biometric_id','!=',$biometric_id)
+        $result = DB::table('ftp')->select(DB::raw("ftp.*,employee_names_vw.employee_name"))
+                        ->join('employees','ftp.biometric_id','=','employees.biometric_id')
+                        ->join('employee_names_vw','employee_names_vw.biometric_id','=','ftp.biometric_id')
+                        ->where('ftp.biometric_id','!=',$employee->biometric_id)
+                        ->where('employees.division_id',$employee->division_id)
+                        ->where('emp_level','>=',$employee->emp_level);
+        return $result->get();
+    }
+
     public function sched()
     {
         $result = FailureToPunch::select(DB::raw("time_in,

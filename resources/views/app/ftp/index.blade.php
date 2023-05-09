@@ -1,3 +1,7 @@
+<?php
+	use Carbon\Carbon;
+?>
+
 @extends('app.layout')
 
 @section('csslib')
@@ -19,8 +23,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-link active" aria-current="page" href="ftp">FTP</a>
-        <a class="nav-link" href="leave-request">Leave Request</a>
+        <a class="nav-link active" aria-current="page" href="{{ url('ftp') }}">FTP</a>
+        <a class="nav-link" aria-current="page" href="{{ url('ftp_approval') }}">FTP Approval</a>
+        <a class="nav-link" href="{{ url('leave-request') }}">Leave Request</a>
 		<a class="nav-link" href="#" onclick="fnLogOut()" >Logout</a>
       </div>
     </div>
@@ -37,9 +42,12 @@
 	</div>
 
 	@foreach($list as $filerequest)
-		
+		<?php
+			$date = Carbon::createFromFormat('Y-m-d',$filerequest->ftp_date);
+
+		?>
 		<div class = "card mystyle mb-2">
-			<div class="card-header" > {{ $filerequest->ftp_date }} </div>
+			<div class="card-header" > {{ $date->format('m/d/Y') }} </div>
 			<div class="card-body mystyle" > 
 				Type : {{ $filerequest->ftp_type }} <br>
 				Time : {{ $filerequest->ftp_time }}  / {{ $filerequest->ftp_state }}<br>

@@ -7,10 +7,17 @@ use App\Models\FailureToPunch as FTP;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Exceptions\ErrorMsg;
+use App\Http\Repositories\UserRepository;
 
 class FTPController extends Controller
 {
     //
+    private $repo;
+
+    public function __construct(UserRepository $repo)
+    {   
+        $this->repo = $repo;
+    }
 
     public function index()
     {
@@ -33,7 +40,7 @@ class FTPController extends Controller
 
         $user = Auth::user();
         $ftp_date = Carbon::createFromFormat('m/d/Y',$request->input('ftp_date'));
-
+       
         $data = array(
             'ftp_date' => $ftp_date->format('Y-m-d'),
             'ftp_time' => $request->input('ftp_time'),
@@ -44,6 +51,7 @@ class FTPController extends Controller
             'biometric_id' => $user->email
 
         );
+
         try {
             $result = FTP::create($data);
         }catch(\Exception $e){
@@ -78,12 +86,13 @@ class FTPController extends Controller
             // $basic  = new \Nexmo\Client\Credentials\Basic(getenv("NEXMO_KEY"), getenv("NEXMO_SECRET"));
             // $client = new \Nexmo\Client($basic);
 
+            //$receiverNumber = "+639336154430";
             $receiverNumber = "+639150153671";
-            $message = "This is testing from ItSolutionStuff.com";
+            $message = "This is testing online FTP request.";
 
             $message = $client->message()->send([
                 'to' => $receiverNumber,
-                'from' => 'Vonage APIs',
+                'from' => 'JLR Online Portal',
                 'text' => $message
             ]);
 
@@ -95,4 +104,21 @@ class FTPController extends Controller
 
 
     }
+
+    public function pending()
+    {
+        $user = Auth::user();
+
+        $emp = $this->repo->getuserLevel($user->email);
+
+        if($emp->emp_level<=5){
+            $list = FTP::listForApproval($emp);
+
+            dd($list);
+        }else{
+            return 'Unauthorized access.';
+        }
+    }
+
+
 }

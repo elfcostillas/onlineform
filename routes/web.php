@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use  App\Http\Controllers\MainController;
 use  App\Http\Controllers\FTPController;
 use  App\Http\Controllers\LeaveController;
+use  App\Http\Controllers\UserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,12 +38,28 @@ Route::middleware('auth')->prefix('ftp')->group(function(){
       
 });
 
+Route::middleware('auth')->prefix('ftp_approval')->group(function(){
+    
+    Route::get('/',[FTPController::class,'pending']);
+    // Route::get('create',[FTPController::class,'create']);
+    // Route::post('create',[FTPController::class,'saveCreate']);
+    // Route::get('scheds/{type}',[FTPController::class,'getSched']);
+    // Route::get('sendSMS',[FTPController::class,'sendSMS']);
+      
+});
+
 Route::middleware('auth')->prefix('leave-request')->group(function(){
     
     Route::get('/',[LeaveController::class,'index']);
     Route::get('create',[LeaveController::class,'create']);
+});
+
+Route::middleware('auth')->prefix('user')->group(function(){
     
+    Route::get('copy',[UserController::class,'copy']);
+
       
 });
+
 
 require __DIR__.'/auth.php';

@@ -38,7 +38,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-link active" aria-current="page" href="ftp">FTP</a>
+        <a class="nav-link active" aria-current="page" href="{{ url('ftp') }}">FTP</a>
         <a class="nav-link" href="leave-request">Leave Request</a>
 		<a class="nav-link" href="#" onclick="fnLogOut()" >Logout</a>
       </div>
@@ -72,6 +72,8 @@
 					<select class="form-select form-select-sm" name="ftp_state" id="ftp_state"  value="{{ old('ftp_state')}}">
 						<option value="In"> Clock In</option>
 						<option value="Out"> Clock Out</option>
+						<option value="InOT"> Clock In (OT)</option>
+						<option value="OutOT"> Clock Out (OT)</option>
 					</select>
 				</div>
 				<div class="col-4"> <label class="mb-2" for="">Time</label> 
@@ -84,13 +86,13 @@
 				
 				<div class="col-4 mt-3">
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="ftp_type" id="inlineRadio1" value="{{ old('ftp_type')}}" required value="OB">
+						<input class="form-check-input" type="radio" name="ftp_type" id="inlineRadio1"  required value="OB">
 						<label class="form-check-label" for="inlineRadio1">Official Business</label>
 					</div>
 				</div>
 				<div class="col-4 mt-3">
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="ftp_type" id="inlineRadio2" value="{{ old('ftp_type')}}" required value="PR">
+							<input class="form-check-input" type="radio" name="ftp_type" id="inlineRadio2" required value="PR">
 							<label class="form-check-label" for="inlineRadio2">Personal</label>
 						</div>
 				</div>	

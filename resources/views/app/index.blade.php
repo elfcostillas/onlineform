@@ -34,12 +34,16 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-link" aria-current="page" href="ftp">FTP</a>
-        <a class="nav-link" href="leave-request">Leave Request</a>
-		<a class="nav-link" href="#" onclick="fnLogOut()" >Logout</a>
+        <a class="nav-link active" aria-current="page" href="{{ url('ftp') }}">FTP</a>
+        <a class="nav-link" aria-current="page" href="{{ url('ftp_approval') }}">FTP Approval</a>
+        <a class="nav-link" href="{{ url('leave-request') }}">Leave Request</a>
+		    <a class="nav-link" href="#" onclick="fnLogOut()" >Logout</a>
       </div>
     </div>
   </div>
 </nav>
 @endsection
 
+@section('page-content')
+  Welcome {{$name}}.
+@endsection
