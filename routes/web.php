@@ -31,6 +31,7 @@ Route::get('/',[MainController::class,'index'])->middleware(['auth'])->name('das
 Route::middleware('auth')->prefix('ftp')->group(function(){
     
     Route::get('/',[FTPController::class,'index']);
+    Route::get('page/{page}',[FTPController::class,'index2']);
     Route::get('create',[FTPController::class,'create']);
     Route::post('create',[FTPController::class,'saveCreate']);
     Route::get('scheds/{type}',[FTPController::class,'getSched']);
@@ -41,6 +42,8 @@ Route::middleware('auth')->prefix('ftp')->group(function(){
 Route::middleware('auth')->prefix('ftp_approval')->group(function(){
     
     Route::get('/',[FTPController::class,'pending']);
+    Route::post('approve',[FTPController::class,'approve']);
+    Route::post('deny',[FTPController::class,'deny']);
     // Route::get('create',[FTPController::class,'create']);
     // Route::post('create',[FTPController::class,'saveCreate']);
     // Route::get('scheds/{type}',[FTPController::class,'getSched']);

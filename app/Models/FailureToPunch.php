@@ -23,16 +23,30 @@ class FailureToPunch extends Model
         'ftp_remarks',
         'ftp_type',
         'encoded_on',
-        'biometric_id'
+        'biometric_id',
+        'ftp_status'
     ];
     
     public function list($biometric_id,$limit)
     {
         $result = FailureToPunch::where('biometric_id',$biometric_id)
+                ->orderBy('id','desc')
                 ->limit($limit);
 
         return $result->get();
     }
+
+    public function list2($biometric_id,$limit,$skip)
+    {
+        
+        $result = FailureToPunch::where('biometric_id',$biometric_id)
+                ->orderBy('id','desc')
+                ->limit($limit)->skip($skip);
+
+        return $result->get();
+    }
+
+
 
     public function listForApproval($employee){
         // $result = FailureToPunch::where('biometric_id','!=',$biometric_id)
@@ -40,8 +54,16 @@ class FailureToPunch extends Model
                         ->join('employees','ftp.biometric_id','=','employees.biometric_id')
                         ->join('employee_names_vw','employee_names_vw.biometric_id','=','ftp.biometric_id')
                         ->where('ftp.biometric_id','!=',$employee->biometric_id)
-                        ->where('employees.division_id',$employee->division_id)
-                        ->where('emp_level','>=',$employee->emp_level);
+                        //->where('employees.division_id',$employee->division_id)
+                        ->where('emp_level','>',$employee->emp_level)
+                        //->whereNull('ftp_status');
+                        ->where('ftp_status','Pending');
+        if($employee->emp_level==3 || $employee->emp_level==4){
+            $result->where('dept_id',$employee->dept_id);
+        }
+        if($employee->emp_level==2){
+            $result->where('division_id',$employee->division_id);
+        }
         return $result->get();
     }
 

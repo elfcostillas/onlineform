@@ -22,10 +22,23 @@ class FTPController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $list = FTP::list($user->email,10);
+        $pageCount = 10;
+        // $skip = ($request->page * 10) + 1;
+        $list = FTP::list($user->email,$pageCount);
 
         return view('app.ftp.index',['list' => $list]);
     }
+
+    public function index2(Request $request)
+    {
+        $user = Auth::user();
+        $pageCount = 10;
+        $skip = ($request->page-1) * 10; //($request->page * 10) + 1;
+        $list = FTP::list2($user->email,$pageCount,$skip);
+
+        return view('app.ftp.index',['list' => $list]);
+    }
+
 
     public function create(Request $request)
     {   
@@ -48,7 +61,8 @@ class FTPController extends Controller
             'ftp_remarks' => $request->input('ftp_remarks'),
             'ftp_type' => $request->input('ftp_type'),
             'encoded_on' => now(),
-            'biometric_id' => $user->email
+            'biometric_id' => $user->email,
+            'ftp_status' => 'Pending'
 
         );
 
@@ -66,7 +80,8 @@ class FTPController extends Controller
             $user = Auth::user();
             $list = FTP::list($user->email,10);
 
-            return view('app.ftp.index',['list' => $list]);
+            //return view('app.ftp.index',['list' => $list]);
+            return redirect('ftp');
         }
     }
 
@@ -114,11 +129,40 @@ class FTPController extends Controller
         if($emp->emp_level<=5){
             $list = FTP::listForApproval($emp);
 
-            dd($list);
+            return view('app.ftp-approval.index',['list' => $list]);
         }else{
             return 'Unauthorized access.';
         }
     }
+
+    public function approve(Request $request){
+        $user = Auth::user();
+        $ftp = FTP::find($request->id); 
+
+        $ftp->approved_by = $user->id;
+        $ftp->approved_on = now();
+        $ftp->ftp_status = 'Approved';
+    
+        $ftp->save();
+
+        return true;
+    }
+
+    public function deny(Request $request){
+        $user = Auth::user();
+        $ftp = FTP::find($request->id); 
+
+        $ftp->approved_by = $user->id;
+        $ftp->approved_on = now();
+        $ftp->ftp_status = 'Denied';
+        $ftp->remarks = $request->remarks;
+
+        $ftp->save();
+
+        return true;
+    }
+
+    
 
 
 }
