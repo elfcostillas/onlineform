@@ -36,7 +36,7 @@
       <div class="navbar-nav">
         <a class="nav-link" aria-current="page" href="ftp">FTP</a>
         <a class="nav-link active" href="leave-request">Leave Request</a>
-		<a class="nav-link" href="#" onclick="fnLogOut()" >Logout</a>
+		    <a class="nav-link" href="#" onclick="fnLogOut()" >Logout</a>
       </div>
     </div>
   </div>

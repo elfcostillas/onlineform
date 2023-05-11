@@ -25,7 +25,9 @@
 
 @endsection
 
-@section('navbar')
+@include('app.nav-header')
+
+<!-- @section('navbar')
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">JLR </a>
@@ -42,7 +44,7 @@
     </div>
   </div>
 </nav>
-@endsection
+@endsection -->
 
 @section('page-content')
   Welcome {{$name}}.

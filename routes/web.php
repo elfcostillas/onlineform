@@ -5,6 +5,7 @@ use  App\Http\Controllers\MainController;
 use  App\Http\Controllers\FTPController;
 use  App\Http\Controllers\LeaveController;
 use  App\Http\Controllers\UserController;
+use  App\Http\Controllers\AttendanceController;
 
 
 /*
@@ -52,9 +53,15 @@ Route::middleware('auth')->prefix('ftp_approval')->group(function(){
 });
 
 Route::middleware('auth')->prefix('leave-request')->group(function(){
-    
     Route::get('/',[LeaveController::class,'index']);
     Route::get('create',[LeaveController::class,'create']);
+});
+
+
+Route::middleware('auth')->prefix('attendance')->group(function(){
+    Route::get('/',[AttendanceController::class,'index']);
+    Route::get('get-periods/{year}/{month}',[AttendanceController::class,'getPeriods']);
+    Route::get('get-dtr/{period_id}',[AttendanceController::class,'getDTR']);
 });
 
 Route::middleware('auth')->prefix('user')->group(function(){
