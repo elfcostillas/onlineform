@@ -86,17 +86,19 @@ class FailureToPunch extends Model
 
     public function schedout()
     {
-        $result = FailureToPunch::select(DB::raw("time_out as time_in,
-            FLOOR((TIME_TO_SEC(time_out) % TIME_TO_SEC('12:01'))/3600) AS hrs,
-            LPAD(FLOOR((TIME_TO_SEC(time_out) % TIME_TO_SEC('1:00'))/60),2,0) AS mins,
+
+        $result = FailureToPunch::select(DB::raw("time_desc as time_in,
+            FLOOR((TIME_TO_SEC(time_desc) % TIME_TO_SEC('12:00'))/3600) AS hrs,
+            LPAD(FLOOR((TIME_TO_SEC(time_desc) % TIME_TO_SEC('1:00'))/60),2,0) AS mins,
             CASE 
-                WHEN TIME_TO_SEC(time_out) < TIME_TO_SEC('12:00') THEN 'A.M.'
+                WHEN TIME_TO_SEC(time_desc) < TIME_TO_SEC('12:00') THEN 'A.M.'
                 ELSE 'P.M.'
             END AS ampm"
         ))
         ->distinct()
-        ->from('work_schedules')
-        ->orderBy('time_out','asc');
+       
+        ->from('times');
+        //->orderBy('time_out','asc');
 
         return $result->get();
     }
