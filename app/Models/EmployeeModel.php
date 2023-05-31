@@ -43,4 +43,26 @@ class EmployeeModel extends Model
         }
 
     }
+
+    public function getEmployeeRelievers($biometric_id)
+    {
+        //SELECT dept_id FROM employees WHERE biometric_id = 847
+
+        $dept = EmployeeModel::select('dept_id')->where('biometric_id',$biometric_id)->first();
+
+        //dd($dept->dept_id);
+        $employees = EmployeeModel::select(DB::raw("biometric_id,concat(lastname,', ',firstname) as emp_name"))
+        ->where('dept_id',$dept->dept_id)
+        ->where('biometric_id','!=',$biometric_id)
+        ->where('exit_status','=',1)
+        ->get();
+    
+        return $employees;
+    }
+
+    public function findSelf($biometric_id){
+        $i = EmployeeModel::select('dept_id','division_id','job_title_id')->where('biometric_id',$biometric_id);
+
+        return $i->first();
+    }
 }

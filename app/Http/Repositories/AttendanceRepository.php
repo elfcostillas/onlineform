@@ -14,7 +14,7 @@ class AttendanceRepository
 		$result = DB::table('edtr')
 					->select(DB::raw('YEAR(dtr_date) as yr'))
 					->distinct()
-					->orderBy('dtr_date','desc')
+					->orderBy('yr','desc')
 					->get();
 
 		return $result;

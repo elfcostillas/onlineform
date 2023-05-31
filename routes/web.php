@@ -55,6 +55,14 @@ Route::middleware('auth')->prefix('ftp_approval')->group(function(){
 Route::middleware('auth')->prefix('leave-request')->group(function(){
     Route::get('/',[LeaveController::class,'index']);
     Route::get('create',[LeaveController::class,'create']);
+    Route::post('edit',[LeaveController::class,'edit']);
+    Route::post('post-leave',[LeaveController::class,'saveLeave']);
+});
+
+Route::middleware('auth')->prefix('leave-approval')->group(function(){
+    Route::get('/',[LeaveController::class,'listForApproval']);
+    Route::post('approve',[LeaveController::class,'approve']);
+    Route::post('deny',[LeaveController::class,'deny']);
 });
 
 
