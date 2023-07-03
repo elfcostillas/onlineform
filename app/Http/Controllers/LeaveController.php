@@ -41,11 +41,12 @@ class LeaveController extends Controller
         $end = $year.'-12-31';
 
         $consumed = LeaveHeader::getBalance($year,$start,$end,$user->email);
+    
       
         $reliever = EmployeeModel::getEmployeeRelievers($user->email);
 
 
-        return view('app.leave-request.create',['types' => $types,'reliever' => $reliever,'consumed' => $consumed]);
+        return view('app.leave-request.create',['types' => $types,'reliever' => $reliever,'consumed' => $consumed,'error' => null]);
     }
 
     public function edit(Request $request)
@@ -113,6 +114,12 @@ class LeaveController extends Controller
 
         $user = Auth::user();
 
+        $year = now()->format('Y');
+        $start = $year.'-01-01';
+        $end = $year.'-12-31';
+
+        $consumed = LeaveHeader::getBalance($year,$start,$end,$user->email);
+
         $self = EmployeeModel::findSelf($user->email);
 
         $array = array(
@@ -136,24 +143,80 @@ class LeaveController extends Controller
             'reliever_id' => $request->emp_reliever
         );
 
-        $header_id = LeaveHeader::create($array);
+        try {
+
+            $header_id = LeaveHeader::create($array);
+        } catch(\Exception $e){
+            //dd($e->getCode());
+
+            //return redirect()->back()->withInput();
+
+            $error = [ 'msg' => 'A Leave with same dates is already filed.'  ];
+
+            $types = LeaveType::all();
+            $reliever = EmployeeModel::getEmployeeRelievers($user->email);
+            //$period = CarbonPeriod::create($this->cdate($request->date_from),$this->cdate($request->date_to));
+
+            $bag = array(
+                'date_from' => $request->input('date_from'),
+                'date_to' => $request->input('date_to'),
+                'emp_reliever' => $request->input('emp_reliever'),
+                'leave_type' => $request->input('leave_type'),
+                'reason' => $request->input('reason'),
+            );
+
+            return view('app.leave-request.create',['types' => $types,'reliever' => $reliever, 'bag' => $bag,'consumed' => $consumed,'error' => $error ]); 
+        }
 
         if($header_id){
+            //dd($consumed);
+            $balance_vl = ($consumed[0]->vacation_leave - $consumed[0]->VL_PAY) * 8;  
+            $balance_sl = ($consumed[0]->sick_leave - $consumed[0]->SL_PAY) * 8;   
+           
+
+         
+
             foreach($request->input('details') as $day => $value)
             {
-               
+                $w_pay = ($value['wpay']==null)? 0 : $value['wpay'];
+                $wo_pay = ($value['wopay']==null)? 0 : $value['wopay'];
+    
+                //$wo_pay = ($value['wopay']==null)? 0 : $value['wopay'];
+
+                if($request->leave_type == 'SL'){
+                    if($balance_sl>0){
+                        $ye_pay = ($balance_sl - $w_pay >=0) ? $w_pay : $w_pay - $balance_sl;
+                        $no_pay = ($balance_sl - $w_pay >=0) ? $wo_pay : ($balance_sl - $w_pay) + $wo_pay;
+                        $balance_sl = ($balance_sl- $ye_pay <= 0) ? 0 : $balance_sl- $ye_pay;
+                    }else {
+                        $ye_pay = 0;
+                        $no_pay = $w_pay + $wo_pay;
+                    }
+                   
+                    
+                }else {
+                    if($balance_vl>0){
+                        $ye_pay = ($balance_vl - $w_pay >=0) ? $w_pay : $w_pay - $balance_vl;
+                        $no_pay = ($balance_vl - $w_pay >=0) ? $wo_pay : ($balance_vl - $w_pay) + $wo_pay;
+                        $balance_vl = ($balance_vl- $ye_pay <= 0) ? 0 : $balance_vl- $ye_pay;
+                    }else {
+                        $ye_pay = 0;
+                        $no_pay = $w_pay + $wo_pay;
+                    }
+                  
+                }
+              
                 $arrayd = array(
                     'header_id' => $header_id->id,
                     'leave_date' => $day,
                     'is_canceled' => 'N',
                     'time_from' => null,
                     'time_to' => null,
-                    'with_pay' => ($value['wpay']==null)? 0 : $value['wpay'],
-                    'without_pay' =>  ($value['wopay']==null)? 0 : $value['wopay'],
+                    'with_pay' => $ye_pay,
+                    'without_pay' =>  $no_pay,
                 );
 
                 LeaveDetail::create($arrayd);
-
             }
         }        
         

@@ -39,6 +39,11 @@
 		</div>	
 	
 	</div>
+	@if($error)
+	<div class="alert alert-danger alert-sm" role="alert">
+	{{ $error['msg'] }}
+	</div>
+	@endif
 	@if($errors->any())
 	<div class="alert alert-danger alert-sm" role="alert">
 	{{ $errors->first() }}
