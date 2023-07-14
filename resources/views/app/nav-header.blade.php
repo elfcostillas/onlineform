@@ -12,8 +12,8 @@ $prefix = Request::route()->getPrefix();
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-	  <a class="nav-link {{ ($prefix == '/ftp') ? 'active' : '' }}" aria-current="page" href="{{ url('ftp') }}">FTP</a>
-        <a class="nav-link {{ ($prefix == '/ftp_approval') ? 'active' : '' }}" aria-current="page" href="{{ url('ftp_approval') }}">FTP Approval</a>
+	    <!-- <a class="nav-link {{ ($prefix == '/ftp') ? 'active' : '' }}" aria-current="page" href="{{ url('ftp') }}">FTP</a>
+        <a class="nav-link {{ ($prefix == '/ftp_approval') ? 'active' : '' }}" aria-current="page" href="{{ url('ftp_approval') }}">FTP Approval</a> -->
         <a class="nav-link {{ ($prefix == '/leave-request') ? 'active' : '' }}" href="{{ url('leave-request') }}">Leave Request</a>
         <a class="nav-link {{ ($prefix == '/leave-approval') ? 'active' : '' }}" href="{{ url('leave-approval') }}">Leave Approval</a>
         <a class="nav-link {{ ($prefix == '/attendance') ? 'active' : '' }}" href="{{ url('attendance') }}">Attendance</a>
