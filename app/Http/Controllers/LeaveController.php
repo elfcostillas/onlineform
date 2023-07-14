@@ -169,9 +169,16 @@ class LeaveController extends Controller
         }
 
         if($header_id){
-            //dd($consumed);
-            $balance_vl = ($consumed[0]->vacation_leave - $consumed[0]->VL_PAY) * 8;  
-            $balance_sl = ($consumed[0]->sick_leave - $consumed[0]->SL_PAY) * 8;   
+
+          
+            if($consumed){
+                $balance_vl = ($consumed[0]->vacation_leave - $consumed[0]->VL_PAY) * 8;  
+                $balance_sl = ($consumed[0]->sick_leave - $consumed[0]->SL_PAY) * 8;  
+            }else {
+                $balance_vl = 0;
+                $balance_sl = 0;
+            }
+             
            
 
          

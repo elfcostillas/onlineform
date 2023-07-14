@@ -44,7 +44,7 @@ class LeaveHeader extends Model
         ->select(DB::raw("leave_request_header.*,SUM(with_pay) with_pay,SUM(without_pay) without_pay,IFNULL(acknowledge_status,'Pending') AS req_status"))
         ->where('leave_request_header.biometric_id',$biometric_id)
         ->orderBy('leave_request_header.id','desc')
-        ->groupBy('leave_request_header.id')->limit($limit);
+        ->groupBy('leave_request_header.id','leave_request_header.biometric_id','leave_request_header.encoded_on')->limit($limit);
 
         /*
         $result = LeaveHeader::where('biometric_id',$biometric_id)
