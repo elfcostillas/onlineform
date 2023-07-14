@@ -57,7 +57,8 @@
             
             </div>
             <div class="card-body mystyle" > 
-                <b> Reason : </b> {{ $l->remarks }} <br>
+                <b> Transaction ID : </b> {{ $l->id }} <br>                
+                <b> Reason : </b> {{ $l->remarks }} <br>                
                 <b> Type : </b> {{ $l->leave_type }} <br>
                 <b> Document Status : </b> {{ $l->document_status}} <br>
                 <b> With Pay : </b> {{ round($l->with_pay/8,2) }} <br>

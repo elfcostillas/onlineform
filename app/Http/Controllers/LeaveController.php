@@ -26,7 +26,7 @@ class LeaveController extends Controller
     {
         $user = Auth::user();
 
-        $list = LeaveHeader::list($user->email,10);
+        $list = LeaveHeader::list($user->email,15);
       
         return view('app.leave-request.index',['list' => $list]);
     }
@@ -42,9 +42,7 @@ class LeaveController extends Controller
 
         $consumed = LeaveHeader::getBalance($year,$start,$end,$user->email);
     
-      
         $reliever = EmployeeModel::getEmployeeRelievers($user->email);
-
 
         return view('app.leave-request.create',['types' => $types,'reliever' => $reliever,'consumed' => $consumed,'error' => null]);
     }
