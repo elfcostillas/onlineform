@@ -39,12 +39,18 @@ class LeaveHeader extends Model
 
     public function list($biometric_id,$limit)
     {
+        $from = date('Y-01-01');
+        $to = date('Y-12-31');
+
         $result = DB::table('leave_request_header')
         ->join('leave_request_detail','header_id','=','leave_request_header.id')
         ->select(DB::raw("leave_request_header.*,SUM(with_pay) with_pay,SUM(without_pay) without_pay,IFNULL(acknowledge_status,'Pending') AS req_status"))
         ->where('leave_request_header.biometric_id',$biometric_id)
+        ->whereBetween('date_from',[$from,$to])
         ->orderBy('leave_request_header.id','desc')
-        ->groupBy('leave_request_header.id','leave_request_header.biometric_id','leave_request_header.encoded_on')->limit($limit);
+        ->groupBy('leave_request_header.id','leave_request_header.biometric_id','leave_request_header.encoded_on');
+
+        //->limit($limit);
 
         /*
         $result = LeaveHeader::where('biometric_id',$biometric_id)
